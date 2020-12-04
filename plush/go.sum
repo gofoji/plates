@@ -15,8 +15,8 @@ github.com/gobuffalo/tags/v3 v3.0.2 h1:gxE6c6fA5radwQeg59aPIeYgCG8YA8AZd3Oh6fh5U
 github.com/gobuffalo/tags/v3 v3.0.2/go.mod h1:ZQeN6TCTiwAFnS0dNcbDtSgZDwNKSpqajvVtt6mlYpA=
 github.com/gobuffalo/validate/v3 v3.0.0 h1:dF7Bg8NMF9Zv8bZvUMXYJXxZdj+eSZ8z/lGM7/jVFUE=
 github.com/gobuffalo/validate/v3 v3.0.0/go.mod h1:HFpjq+AIiA2RHoQnQVTFKF/ZpUPXwyw82LgyDPxQ9r0=
-github.com/gofoji/plates v0.0.0-20201204092041-5546f18a43ea h1:8O6BxdugSlJcK4AXBMaQtBtnOQgN2C7aHTXVYUb79YA=
-github.com/gofoji/plates v0.0.0-20201204092041-5546f18a43ea/go.mod h1:kpCUWXOquRZsQxFIjET0L3VrV47WXhvECu3yvlJubMU=
+github.com/gofoji/plates v0.1.0 h1:cPfKgp8q4fp+w2sTDEwqBkddBm5lMc4i23h33in2oFE=
+github.com/gofoji/plates v0.1.0/go.mod h1:kpCUWXOquRZsQxFIjET0L3VrV47WXhvECu3yvlJubMU=
 github.com/gofrs/uuid v3.2.0+incompatible h1:y12jRkkFxsd7GpqdSZ+/KCs/fJbqpEXSGd4+jfEaewE=
 github.com/gofrs/uuid v3.2.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRxnplIgP/c0N/04lM=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
