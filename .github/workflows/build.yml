@@ -1,8 +1,11 @@
+name: build
+
 on:
   push:
-    branches: [ $default-branch  ]
+    branches: [ main ]
   pull_request:
-name: build
+    branches: [ main ]
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -13,6 +16,7 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.32
+
   build-test:
     strategy:
       matrix:
@@ -24,12 +28,16 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
+
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Build
         run: go build -v ./...
+
       - name: Test
         run: go test -v ./...  -coverprofile=coverage.txt -covermode=count
+
       - name: Coverage Report
         uses: codecov/codecov-action@v1
         with:
