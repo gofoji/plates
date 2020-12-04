@@ -9,14 +9,14 @@ github.com/gobuffalo/github_flavored_markdown v1.1.0 h1:8Zzj4fTRl/OP2R7sGerzSf6g
 github.com/gobuffalo/github_flavored_markdown v1.1.0/go.mod h1:TSpTKWcRTI0+v7W3x8dkSKMLJSUpuVitlptCkpeY8ic=
 github.com/gobuffalo/helpers v0.6.0 h1:CL1xOSGeKCaKD1IUpo4RfrkDU83kmkMG4H3dXAS7dw0=
 github.com/gobuffalo/helpers v0.6.0/go.mod h1:pncVrer7x/KRvnL5aJABLAuT/RhKRR9klL6dkUOhyv8=
-github.com/gobuffalo/plush v1.0.0 h1:R1SDvW7vL9+08KQm2FmUsUolSffLgBb2xSWCGUcZnSc=
-github.com/gobuffalo/plush v3.8.3+incompatible h1:kzvUTnFPhwyfPEsx7U7LI05/IIslZVGnAlMA1heWub8=
 github.com/gobuffalo/plush/v4 v4.0.0 h1:ZHdmfr2R7DQ77XzWZK2PGKJOXm9NRy21EZ6Rw7FhuNw=
 github.com/gobuffalo/plush/v4 v4.0.0/go.mod h1:ErFS3UxKqEb8fpFJT7lYErfN/Nw6vHGiDMTjxpk5bQ0=
 github.com/gobuffalo/tags/v3 v3.0.2 h1:gxE6c6fA5radwQeg59aPIeYgCG8YA8AZd3Oh6fh5UXA=
 github.com/gobuffalo/tags/v3 v3.0.2/go.mod h1:ZQeN6TCTiwAFnS0dNcbDtSgZDwNKSpqajvVtt6mlYpA=
 github.com/gobuffalo/validate/v3 v3.0.0 h1:dF7Bg8NMF9Zv8bZvUMXYJXxZdj+eSZ8z/lGM7/jVFUE=
 github.com/gobuffalo/validate/v3 v3.0.0/go.mod h1:HFpjq+AIiA2RHoQnQVTFKF/ZpUPXwyw82LgyDPxQ9r0=
+github.com/gofoji/plates v0.0.0-20201204092041-5546f18a43ea h1:8O6BxdugSlJcK4AXBMaQtBtnOQgN2C7aHTXVYUb79YA=
+github.com/gofoji/plates v0.0.0-20201204092041-5546f18a43ea/go.mod h1:kpCUWXOquRZsQxFIjET0L3VrV47WXhvECu3yvlJubMU=
 github.com/gofrs/uuid v3.2.0+incompatible h1:y12jRkkFxsd7GpqdSZ+/KCs/fJbqpEXSGd4+jfEaewE=
 github.com/gofrs/uuid v3.2.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRxnplIgP/c0N/04lM=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
