@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gofoji/plate/plush"
 	"github.com/gofoji/plates"
+	"github.com/gofoji/plates/plush"
 )
 
 func TestStringParsing(t *testing.T) {
