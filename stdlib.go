@@ -8,6 +8,8 @@ import (
 	"text/template"
 )
 
+var ParserText = ParserFunc(TextParser)
+
 func TextParser(name string, funcs FuncMap, in string) (Template, error) {
 	t := template.New(name)
 
@@ -31,6 +33,8 @@ func MatchText(filename string) Parser {
 
 	return nil
 }
+
+var ParserHTML = ParserFunc(HTMLParser)
 
 func HTMLParser(name string, funcs FuncMap, in string) (Template, error) {
 	t := htmlTemplate.New(name)
@@ -73,6 +77,8 @@ func (f FormatEngine) Execute(w io.Writer, data interface{}) error {
 	}
 	return err
 }
+
+var ParserFormat = ParserFunc(FormatParser)
 
 func FormatParser(name string, funcs FuncMap, in string) (Template, error) {
 	t := FormatEngine{in}

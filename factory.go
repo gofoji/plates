@@ -33,8 +33,8 @@ type (
 	// FuncMap maps template function names to functions.
 	FuncMap map[string]interface{}
 
-	// Wrapper allows fluent execution of templates and runtime selection of the template engine.
-	Wrapper struct {
+	// Factory allows fluent execution of templates and runtime selection of the template engine.
+	Factory struct {
 		name          string
 		fileReader    FileReader
 		funcs         FuncMap
@@ -83,37 +83,37 @@ func (f ExecutorFunc) Execute(w io.Writer, data interface{}) error {
 	return f(w, data)
 }
 
-// New creates a properly initialized Wrapper.  Name is an arbitrary label passed to the internal template engines
-func New(name string) *Wrapper {
-	return &Wrapper{name: name, fileReader: FileReaderFunc(ioutil.ReadFile), funcs: FuncMap{}}
+// New creates a properly initialized Factory.  Name is an arbitrary label passed to the internal template engines
+func New(name string) *Factory {
+	return &Factory{name: name, fileReader: FileReaderFunc(ioutil.ReadFile), funcs: FuncMap{}}
 }
 
 // FileReader allows overriding how filenames are evaluated and loaded.
-func (t *Wrapper) FileReader(in FileReader) *Wrapper {
+func (t *Factory) FileReader(in FileReader) *Factory {
 	t.fileReader = in
 
 	return t
 }
 
 // FileReaderFunc allows overriding how filenames are evaluated and loaded.
-func (t *Wrapper) FileReaderFunc(in FileReaderFunc) *Wrapper {
+func (t *Factory) FileReaderFunc(in FileReaderFunc) *Factory {
 	return t.FileReader(in)
 }
 
 // AddFuncs adds the provided FuncMap to the library
-func (t *Wrapper) AddFuncs(in ...FuncMap) *Wrapper {
+func (t *Factory) AddFuncs(in ...FuncMap) *Factory {
 	t.funcs.Add(in...)
 
 	return t
 }
 
-func (t *Wrapper) AddMatcher(in ...Matcher) *Wrapper {
+func (t *Factory) AddMatcher(in ...Matcher) *Factory {
 	t.matchers = append(t.matchers, in...)
 
 	return t
 }
 
-func (t *Wrapper) AddMatcherFunc(in ...MatcherFunc) *Wrapper {
+func (t *Factory) AddMatcherFunc(in ...MatcherFunc) *Factory {
 	for _, mf := range in {
 		t.AddMatcher(mf)
 	}
@@ -121,17 +121,17 @@ func (t *Wrapper) AddMatcherFunc(in ...MatcherFunc) *Wrapper {
 	return t
 }
 
-func (t *Wrapper) Default(in Parser) *Wrapper {
+func (t *Factory) Default(in Parser) *Factory {
 	t.defaultParser = in
 
 	return t
 }
 
-func (t *Wrapper) DefaultFunc(in ParserFunc) *Wrapper {
+func (t *Factory) DefaultFunc(in ParserFunc) *Factory {
 	return t.Default(in)
 }
 
-func (t Wrapper) FromFile(templateFile string) Template {
+func (t Factory) FromFile(templateFile string) Template {
 	b, err := t.fileReader.ReadFile(templateFile)
 	if err != nil {
 		return errEngine{fmt.Errorf("error reading template: %s: %w", templateFile, err)}
@@ -141,7 +141,7 @@ func (t Wrapper) FromFile(templateFile string) Template {
 }
 
 // FromName uses the engine matchers to find the approprite template engine based on the name
-func (t Wrapper) FromName(name, s string) Template {
+func (t Factory) FromName(name, s string) Template {
 	for _, m := range t.matchers {
 		parser := m.Match(name)
 		if parser != nil {
@@ -152,11 +152,11 @@ func (t Wrapper) FromName(name, s string) Template {
 	return t.From(s)
 }
 
-func (t Wrapper) From(s string) Template {
+func (t Factory) From(s string) Template {
 	return t.from(s, t.defaultParser)
 }
 
-func (t Wrapper) from(s string, parser Parser) Template {
+func (t Factory) from(s string, parser Parser) Template {
 	e, err := parser.Parse(t.name, t.funcs, s)
 	if err != nil {
 		return errEngine{fmt.Errorf("error parsing template: %w", err)}
