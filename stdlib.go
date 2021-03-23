@@ -1,7 +1,9 @@
 package plates
 
 import (
+	"fmt"
 	htmlTemplate "html/template"
+	"io"
 	"strings"
 	"text/template"
 )
@@ -23,7 +25,7 @@ func TextParser(name string, funcs FuncMap, in string) (Template, error) {
 
 // MatchText returns a TextParser if the filename ends with ".txt.tpl"
 func MatchText(filename string) Parser {
-	if strings.HasSuffix(filename, ".txt.tpl") || strings.HasSuffix(filename, ".gotxt")  || strings.HasSuffix(filename, ".tmpl") {
+	if strings.HasSuffix(filename, ".txt.tpl") || strings.HasSuffix(filename, ".gotxt") || strings.HasSuffix(filename, ".tmpl") {
 		return ParserFunc(TextParser)
 	}
 
@@ -47,8 +49,41 @@ func HTMLParser(name string, funcs FuncMap, in string) (Template, error) {
 
 // MatchHTML returns an HTMLParser if the filename ends with ".htm.tpl" or ".html.tpl"
 func MatchHTML(filename string) Parser {
-	if strings.HasSuffix(filename, ".htm.tpl") || strings.HasSuffix(filename, ".html.tpl")  || strings.HasSuffix(filename, ".gohtml") {
+	if strings.HasSuffix(filename, ".htm.tpl") || strings.HasSuffix(filename, ".html.tpl") || strings.HasSuffix(filename, ".gohtml") {
 		return ParserFunc(HTMLParser)
+	}
+
+	return nil
+}
+
+// FormatEngine uses the golang fmt package to process a string.
+// Warning: It is not possible to generate an error for an invalid format string.  Go will embed the error message in
+// the output string, for example: `%!d(string=foo)` for an invalid type or `%!s(MISSING)` for missing data
+type FormatEngine struct {
+	format string
+}
+
+func (f FormatEngine) Execute(w io.Writer, data interface{}) error {
+	var err error
+	switch d := data.(type) {
+	case []interface{}:
+		_, err = fmt.Fprintf(w, f.format, d...)
+	default:
+		_, err = fmt.Fprintf(w, f.format, d)
+	}
+	return err
+}
+
+func FormatParser(name string, funcs FuncMap, in string) (Template, error) {
+	t := FormatEngine{in}
+
+	return NewEngine(t), nil
+}
+
+// MatchFormat returns a Go Format Parser if the filename ends with ".format" or ".string" or ".goformat"
+func MatchFormat(filename string) Parser {
+	if strings.HasSuffix(filename, ".format") || strings.HasSuffix(filename, ".string") || strings.HasSuffix(filename, ".goformat") {
+		return ParserFunc(FormatParser)
 	}
 
 	return nil

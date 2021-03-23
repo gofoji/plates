@@ -55,7 +55,7 @@ type (
 		Parse(name string, funcs FuncMap, input string) (Template, error)
 	}
 
-	// ParseFunc reads the input template string and returns an executable Template.
+	// ParserFunc reads the input template string and returns an executable Template.
 	ParserFunc func(name string, funcs FuncMap, input string) (Template, error)
 
 	// Executor executes a template against an io.Writer given the context.
@@ -83,7 +83,7 @@ func (f ExecutorFunc) Execute(w io.Writer, data interface{}) error {
 	return f(w, data)
 }
 
-// New creates a properly initialized Wrapper
+// New creates a properly initialized Wrapper.  Name is an arbitrary label passed to the internal template engines
 func New(name string) *Wrapper {
 	return &Wrapper{name: name, fileReader: FileReaderFunc(ioutil.ReadFile), funcs: FuncMap{}}
 }
@@ -95,12 +95,12 @@ func (t *Wrapper) FileReader(in FileReader) *Wrapper {
 	return t
 }
 
-// FileReader allows overriding how filenames are evaluated and loaded.
+// FileReaderFunc allows overriding how filenames are evaluated and loaded.
 func (t *Wrapper) FileReaderFunc(in FileReaderFunc) *Wrapper {
 	return t.FileReader(in)
 }
 
-// funcs adds the provided FuncMap to the library
+// AddFuncs adds the provided FuncMap to the library
 func (t *Wrapper) AddFuncs(in ...FuncMap) *Wrapper {
 	t.funcs.Add(in...)
 
@@ -137,14 +137,19 @@ func (t Wrapper) FromFile(templateFile string) Template {
 		return errEngine{fmt.Errorf("error reading template: %s: %w", templateFile, err)}
 	}
 
+	return t.FromName(templateFile, string(b))
+}
+
+// FromName uses the engine matchers to find the approprite template engine based on the name
+func (t Wrapper) FromName(name, s string) Template {
 	for _, m := range t.matchers {
-		parser := m.Match(templateFile)
+		parser := m.Match(name)
 		if parser != nil {
-			return t.from(string(b), parser)
+			return t.from(s, parser)
 		}
 	}
 
-	return t.From(string(b))
+	return t.From(s)
 }
 
 func (t Wrapper) From(s string) Template {

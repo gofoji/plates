@@ -12,7 +12,7 @@ import (
 )
 
 func TestStringParsing(t *testing.T) {
-	matchers := []plates.MatcherFunc{plates.MatchText, plates.MatchHTML}
+	matchers := []plates.MatcherFunc{plates.MatchText, plates.MatchHTML, plates.MatchFormat}
 
 	tests := []struct {
 		name    string
@@ -29,6 +29,10 @@ func TestStringParsing(t *testing.T) {
 		{"basic HTML", plates.HTMLParser, matchers, []plates.FuncMap{{"echo": echo}}, `{{echo "<h1>A header!</h1>"}}`, nil, "ECHO:&#39;&lt;h1&gt;A header!&lt;/h1&gt;&#39;", false},
 		{"bad HTML", plates.HTMLParser, matchers, []plates.FuncMap{{"echo": echo}}, `{{badFunc}}`, nil, "", true},
 		{"abort", plates.TextParser, matchers, []plates.FuncMap{{"echo": echo}}, "{{.Abort }}", &TestContext{}, "", true},
+		{"basic Format", plates.FormatParser, matchers, nil, `test%stest`, "foo", "testfootest", false},
+		{"complex Format", plates.FormatParser, matchers, nil, `test%stest%s`, []interface{}{"1", "2"}, "test1test2", false},
+		// Format does not allow errors for template parsing
+		{"bad Format", plates.FormatParser, matchers, nil, `test%d%s%s%d%dtest`, "foo", "test%!d(string=foo)%!s(MISSING)%!s(MISSING)%!d(MISSING)%!d(MISSING)test", false},
 	}
 
 	for _, tt := range tests {
@@ -54,7 +58,7 @@ func TestStringParsing(t *testing.T) {
 }
 
 func TestFileParsing(t *testing.T) {
-	matchers := []plates.MatcherFunc{plates.MatchText, plates.MatchHTML}
+	matchers := []plates.MatcherFunc{plates.MatchText, plates.MatchHTML, plates.MatchFormat}
 	funcs := plates.FuncMap{"echo": echo}
 	def := plates.TextParser
 
@@ -71,7 +75,9 @@ func TestFileParsing(t *testing.T) {
 		}
 
 		t.Run(test, func(t *testing.T) {
-			got, err := w.FromFile(test).To(&TestContext{})
+			ctx := TestContext{}
+
+			got, err := w.FromFile(test).To(&ctx)
 			if err != nil {
 				if strings.HasPrefix(test, "testdata/error") {
 					return
@@ -87,7 +93,7 @@ func TestFileParsing(t *testing.T) {
 			}
 
 			if got != string(want) {
-				t.Errorf("got = %v, want %v", got, string(want))
+				t.Errorf("got = `%v`, want `%v`", got, string(want))
 			}
 		})
 	}
@@ -168,5 +174,9 @@ func (t *TestContext) Aborted() error {
 
 func (t *TestContext) Abort() string {
 	t.abort = fmt.Errorf("aborted")
+	return ""
+}
+
+func (t *TestContext) String() string {
 	return ""
 }
