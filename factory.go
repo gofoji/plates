@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -85,7 +84,7 @@ func (f ExecutorFunc) Execute(w io.Writer, data interface{}) error {
 
 // New creates a properly initialized Factory.  Name is an arbitrary label passed to the internal template engines
 func New(name string) *Factory {
-	return &Factory{name: name, fileReader: FileReaderFunc(ioutil.ReadFile), funcs: FuncMap{}}
+	return &Factory{name: name, fileReader: FileReaderFunc(os.ReadFile), funcs: FuncMap{}}
 }
 
 // FileReader allows overriding how filenames are evaluated and loaded.

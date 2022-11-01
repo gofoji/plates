@@ -2,7 +2,6 @@ package plates_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -86,7 +85,7 @@ func TestFileParsing(t *testing.T) {
 				return
 			}
 
-			want, err := ioutil.ReadFile(test + "_want")
+			want, err := os.ReadFile(test + "_want")
 			if err != nil {
 				t.Errorf("want error = %v", err)
 				return
