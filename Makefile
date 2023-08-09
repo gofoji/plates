@@ -12,6 +12,6 @@ tidy:
 	go mod tidy
 
 update:
-	go get -u all
+	go get -u ./...
 
 .PHONY:	lint update tidy cover test

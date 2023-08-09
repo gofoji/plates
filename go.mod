@@ -1,3 +1,3 @@
 module github.com/gofoji/plates
 
-go 1.17
+go 1.20
