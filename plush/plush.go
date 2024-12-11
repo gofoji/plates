@@ -4,11 +4,11 @@ import (
 	"io"
 	"strings"
 
-	"github.com/gobuffalo/plush/v4"
+	"github.com/gobuffalo/plush/v5"
 	"github.com/gofoji/plates"
 )
 
-func Parser(name string, funcs plates.FuncMap, in string) (plates.Template, error) {
+func Parser(_ string, funcs plates.FuncMap, in string) (plates.Template, error) {
 	t, err := plush.Parse(in)
 	if err != nil {
 		return nil, err
