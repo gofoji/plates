@@ -28,7 +28,7 @@ func (e plushEngine) Execute(w io.Writer, data interface{}) error {
 	ctx := e.ctx.New()
 	ctx.Set("data", data)
 
-	s, err := e.t.Exec(ctx)
+	s, _, err := e.t.Exec(ctx)
 	if err != nil {
 		return err
 	}

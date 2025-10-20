@@ -1,9 +1,9 @@
 module github.com/gofoji/plates/plush
 
-go 1.23
+go 1.25
 
 require (
-	github.com/gobuffalo/plush/v5 v5.0.1
+	github.com/gobuffalo/plush/v5 v5.0.10
 	github.com/gofoji/plates v0.3.2
 )
 
