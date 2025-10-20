@@ -1,5 +1,5 @@
 lint:
-	golangci-lint run --sort-results
+	golangci-lint run 
 
 test:
 	go test ./...
