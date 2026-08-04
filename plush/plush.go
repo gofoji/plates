@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gobuffalo/plush/v5"
+
 	"github.com/gofoji/plates"
 )
 
@@ -24,7 +25,7 @@ type plushEngine struct {
 	t   *plush.Template
 }
 
-func (e plushEngine) Execute(w io.Writer, data interface{}) error {
+func (e plushEngine) Execute(w io.Writer, data any) error {
 	ctx := e.ctx.New()
 	ctx.Set("data", data)
 

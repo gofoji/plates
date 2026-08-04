@@ -1,0 +1,118 @@
+version: "2"
+run:
+  go: "1.26"
+linters:
+  default: all
+  disable:
+    - contextcheck
+    - depguard
+    - dupl
+    - exhaustruct
+    - funcorder
+    - funlen
+    - gochecknoglobals
+    - godot
+    - ireturn
+    - lll
+    - mnd
+    - nilnil
+    - nlreturn
+    - tagalign
+    - tagliatelle
+    - testpackage
+    - varnamelen
+    - wrapcheck
+    - wsl
+    - gomodguard
+  settings:
+    cyclop:
+      max-complexity: 15
+    exhaustive:
+      default-signifies-exhaustive: true
+    godox:
+      keywords:
+        - TEMP
+        - FIX
+        - FIXME
+    nestif:
+      min-complexity: 7
+    paralleltest:
+      ignore-missing: true
+    prealloc:
+      range-loops: false
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: if-return
+        - name: increment-decrement
+        - name: var-naming
+        - name: var-declaration
+        - name: package-comments
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: indent-error-flow
+        - name: errorf
+        - name: empty-block
+        - name: superfluous-else
+        - name: unused-parameter
+        - name: unreachable-code
+        - name: redefines-builtin-id
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2
+      disable:
+        - decl
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - .*_gen.go$
+      - .*.pb.go$
+      - mock_*.go$
+      - temp
+      - cmd
+      - scratch
+      - gen
+      - mocks
+    rules:
+      - path: _test\.go
+        linters:
+          - dupl
+          - err113
+          - gocyclo
+          - gosec
+          - gosmopolitan
+          - maintidx
+          - goconst
+formatters:
+  enable:
+    - goimports
+    - gci
+    - gofumpt
+  settings:
+    gofumpt:
+      module-path: app
+    gci:
+      sections:
+        - standard
+        - default
+        - localmodule
+      custom-order: true
+  exclusions:
+    generated: disable
+
+output:
+  sort-order:
+    - file

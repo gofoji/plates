@@ -34,6 +34,38 @@ func MatchText(filename string) Parser {
 	return nil
 }
 
+var ParserScript = ParserFunc(ScriptParser)
+
+// ScriptParser parses a line oriented directive template.  Each line is the body of a single action *without*
+// delimiters; blank lines are dropped and the rest are trimmed and wrapped in `{{- -}}`.  So:
+//
+//	$name := .Get "name"
+//	.Set "greeting" (printf "hello %s" $name)
+//
+// becomes `{{- $name := .Get "name" -}}{{- .Set "greeting" (printf "hello %s" $name) -}}`.  The trim markers mean the
+// template emits only what an action explicitly writes, and authors are free to indent for readability.  It is
+// intended for templates that drive side effects rather than produce a document.
+func ScriptParser(name string, funcs FuncMap, in string) (Template, error) {
+	var final []string
+
+	for line := range strings.SplitSeq(in, "\n") {
+		if line = strings.TrimSpace(line); line != "" {
+			final = append(final, "{{- "+line+" -}}")
+		}
+	}
+
+	return TextParser(name, funcs, strings.Join(final, "\n"))
+}
+
+// MatchScript returns a ScriptParser if the filename ends with ".script" or ".goscript"
+func MatchScript(filename string) Parser {
+	if strings.HasSuffix(filename, ".script") || strings.HasSuffix(filename, ".goscript") {
+		return ParserFunc(ScriptParser)
+	}
+
+	return nil
+}
+
 var ParserHTML = ParserFunc(HTMLParser)
 
 func HTMLParser(name string, funcs FuncMap, in string) (Template, error) {
@@ -67,20 +99,22 @@ type FormatEngine struct {
 	format string
 }
 
-func (f FormatEngine) Execute(w io.Writer, data interface{}) error {
+func (f FormatEngine) Execute(w io.Writer, data any) error {
 	var err error
+
 	switch d := data.(type) {
-	case []interface{}:
+	case []any:
 		_, err = fmt.Fprintf(w, f.format, d...)
 	default:
 		_, err = fmt.Fprintf(w, f.format, d)
 	}
+
 	return err
 }
 
 var ParserFormat = ParserFunc(FormatParser)
 
-func FormatParser(name string, funcs FuncMap, in string) (Template, error) {
+func FormatParser(_ string, _ FuncMap, in string) (Template, error) {
 	t := FormatEngine{in}
 
 	return NewEngine(t), nil

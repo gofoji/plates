@@ -1,8 +1,11 @@
 lint:
 	golangci-lint run 
 
+fmt:
+	golangci-lint fmt
+
 test:
-	go test ./...
+	go test -race ./...
 
 cover:
 	go test	-coverprofile cp.out ./...
@@ -14,4 +17,4 @@ tidy:
 update:
 	go get -u ./...
 
-.PHONY:	lint update tidy cover test
+.PHONY:	lint update tidy cover test fmt

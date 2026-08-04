@@ -6,8 +6,9 @@ import (
 
 // Map is a thread-safe cache for templates
 type Map struct {
-	items map[string]Template
 	sync.RWMutex
+
+	items map[string]Template
 }
 
 func NewMap() *Map {
@@ -30,6 +31,7 @@ func (c *Map) Get(k string) (Template, bool) {
 	c.RLock()
 	v, ok := c.items[k]
 	c.RUnlock()
+
 	return v, ok
 }
 

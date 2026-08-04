@@ -14,7 +14,7 @@ func TestStringParsing(t *testing.T) {
 		def     plates.ParserFunc
 		f       plates.FuncMap
 		in      string
-		data    interface{}
+		data    any
 		want    string
 		wantErr bool
 	}{
@@ -70,7 +70,6 @@ func TestStringParsing(t *testing.T) {
 	if got != want {
 		t.Errorf("got = %v, want %v", got, want)
 	}
-
 }
 
 func ConstReader(_ string) ([]byte, error) {

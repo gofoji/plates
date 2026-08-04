@@ -1,6 +1,7 @@
 package plates_test
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -19,7 +20,7 @@ func TestStringParsing(t *testing.T) {
 		mf      []plates.MatcherFunc
 		f       []plates.FuncMap
 		in      string
-		data    interface{}
+		data    any
 		want    string
 		wantErr bool
 	}{
@@ -29,7 +30,7 @@ func TestStringParsing(t *testing.T) {
 		{"bad HTML", plates.HTMLParser, matchers, []plates.FuncMap{{"echo": echo}}, `{{badFunc}}`, nil, "", true},
 		{"abort", plates.TextParser, matchers, []plates.FuncMap{{"echo": echo}}, "{{.Abort }}", &TestContext{}, "", true},
 		{"basic Format", plates.FormatParser, matchers, nil, `test%stest`, "foo", "testfootest", false},
-		{"complex Format", plates.FormatParser, matchers, nil, `test%stest%s`, []interface{}{"1", "2"}, "test1test2", false},
+		{"complex Format", plates.FormatParser, matchers, nil, `test%stest%s`, []any{"1", "2"}, "test1test2", false},
 		// Format does not allow errors for template parsing
 		{"bad Format", plates.FormatParser, matchers, nil, `test%d%s%s%d%dtest`, "foo", "test%!d(string=foo)%!s(MISSING)%!s(MISSING)%!d(MISSING)%!d(MISSING)test", false},
 	}
@@ -41,11 +42,13 @@ func TestStringParsing(t *testing.T) {
 				if !tt.wantErr {
 					t.Errorf("error = %v", err)
 				}
+
 				return
 			}
 
 			if tt.wantErr {
 				t.Errorf("no error generated")
+
 				return
 			}
 
@@ -81,13 +84,16 @@ func TestFileParsing(t *testing.T) {
 				if strings.HasPrefix(test, "testdata/error") {
 					return
 				}
+
 				t.Errorf("error = %v", err)
+
 				return
 			}
 
 			want, err := os.ReadFile(test + "_want")
 			if err != nil {
 				t.Errorf("want error = %v", err)
+
 				return
 			}
 
@@ -113,7 +119,6 @@ func TestFileParsing(t *testing.T) {
 	if err == nil {
 		t.Errorf("no error generated")
 	}
-
 }
 
 const tempOutputFile = "test_output.txt"
@@ -124,6 +129,7 @@ func TestEngine_ToFile(t *testing.T) {
 	def := plates.TextParser
 
 	e := plates.New("test").DefaultFunc(def).AddFuncs(funcs).AddMatcherFunc(matchers...).From(`{{echo "<h1>A header!</h1>"}}`)
+
 	err := e.ToFile("stdout", &TestContext{})
 	if err != nil {
 		t.Errorf("stdout error = %v", err)
@@ -145,6 +151,7 @@ func TestEngine_ToFile(t *testing.T) {
 	if err == nil {
 		t.Errorf("testoutput error = %v", err)
 	}
+
 	_ = os.Remove(tempOutputFile)
 
 	e = plates.New("test").DefaultFunc(def).AddFuncs(funcs).AddMatcherFunc(matchers...).FileReaderFunc(ErrorReader).From(`{{.Abort }}`)
@@ -171,8 +178,11 @@ func (t *TestContext) Aborted() error {
 	return t.abort
 }
 
+var errAbort = errors.New("aborted")
+
 func (t *TestContext) Abort() string {
-	t.abort = fmt.Errorf("aborted")
+	t.abort = errAbort
+
 	return ""
 }
 
